@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.report_app.activities.LogInActivity
+import com.example.report_app.databinding.ActivityMainBinding
 import com.example.report_app.databinding.FragmentProfileBinding
 import com.example.report_app.helper.Helper
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,7 @@ import java.io.ByteArrayOutputStream
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var binding2: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var userReference: DatabaseReference
@@ -40,6 +42,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
+        binding2 = ActivityMainBinding.inflate(layoutInflater)
         // Initialize SharedPreferences
         sharedPreferences = requireContext().getSharedPreferences("UserData", Context.MODE_PRIVATE)
         auth = FirebaseAuth.getInstance()
@@ -51,13 +54,11 @@ class ProfileFragment : Fragment() {
 
         binding.update.setOnClickListener {
             val updatedName = binding.name.text.toString()
-            val updatedPassport = binding.passport.text.toString()
             val updatedPhone = binding.phone.text.toString()
-            val updatedGender = binding.gender.text.toString()
             val updatedAddress = binding.address.text.toString()
 
-            // Update user data in the database
-            updateUserData(updatedName, updatedPassport, updatedPhone, updatedGender, updatedAddress)
+            /* Update user data in the database */
+            updateUserData(updatedName, updatedPhone, updatedAddress)
 
             // Check if a new image is selected
             selectedImageUri?.let { uri ->
@@ -124,9 +125,7 @@ class ProfileFragment : Fragment() {
                     userData?.let {
                         with(binding) {
                             name.setText(it.name)
-                            passport.setText(it.passport)
                             phone.setText(it.phone)
-                            gender.setText(it.gender)
                             address.setText(it.address)
                             loadProfileImage(Uri.parse(it.imageUrl))
                         }
@@ -141,12 +140,10 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun updateUserData(name: String, passport: String, phone: String, gender: String, address: String) {
+    private fun updateUserData(name: String, phone: String, address: String) {
         with(userReference) {
             child("name").setValue(name)
-            child("passport").setValue(passport)
             child("phone").setValue(phone)
-            child("gender").setValue(gender)
             child("address").setValue(address)
         }
         showToast("Profile updated successfully")

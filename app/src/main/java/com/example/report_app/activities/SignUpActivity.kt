@@ -36,15 +36,6 @@ class SignUpActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.gender_options,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.genderSpinner.adapter = adapter
-        }
-
         binding.loginText.setOnClickListener {
             startActivity(Intent(this, LogInActivity::class.java))
             finish()
@@ -59,11 +50,9 @@ class SignUpActivity : AppCompatActivity() {
             binding.signUp.visibility = View.GONE
 
             val name = binding.name.text.toString()
-            val passport = binding.passport.text.toString()
             val email = binding.email.text.toString()
             val phone = binding.phone.text.toString()
             val password = binding.password.text.toString()
-            val selectedGender = binding.genderSpinner.selectedItem.toString()
             val address = binding.address.text.toString()
             if(password.isEmpty()||email.isEmpty()){
                 Toast.makeText(this, "Fill Up email and password", Toast.LENGTH_SHORT).show()
@@ -72,19 +61,19 @@ class SignUpActivity : AppCompatActivity() {
             }
             else{
                 if (selectedImageUri != null) {
-                    uploadImageAndCreateAccount(name, passport, email, phone, password, selectedGender, address)
+                    uploadImageAndCreateAccount(name, email, phone, password, address)
                 } else {
                     // If no image is selected, create an account without uploading an image
                     image = "https://firebasestorage.googleapis.com/v0/b/aegis-17642.appspot.com/o/default.jpg?alt=media&token=60e1c165-8227-4c62-bb09-b7cace0e1510"
-                    createAccount(name, passport, email, phone, password, selectedGender, address)
+                    createAccount(name, email, phone, password, address)
                 }
             }
         }
     }
 
     private fun uploadImageAndCreateAccount(
-        name: String, passport: String, email: String,
-        phone: String, password: String, selectedGender: String, address: String
+        name: String, email: String,
+        phone: String, password: String, address: String
     ) {
         val storageRef = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child("profile_images/${System.currentTimeMillis()}.jpg")
@@ -111,7 +100,7 @@ class SignUpActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 val downloadUri = task.result
                 image = downloadUri.toString()
-                createAccount(name, passport, email, phone, password, selectedGender, address)
+                createAccount(name, email, phone, password, address)
             } else {
                 handleUploadImageError()
             }
@@ -119,8 +108,8 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun createAccount(
-        name: String, passport: String, email: String,
-        phone: String, password: String, selectedGender: String, address: String
+        name: String, email: String,
+        phone: String, password: String, address: String
     ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { authTask ->
@@ -131,11 +120,9 @@ class SignUpActivity : AppCompatActivity() {
                         val userRef = database.reference.child("users").child(uid)
                         val userData = mapOf(
                             "name" to name,
-                            "passport" to passport,
                             "email" to email,
                             "imageUrl" to image,
                             "address" to address,
-                            "gender" to selectedGender,
                             "phone" to phone
                         )
 
