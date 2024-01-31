@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/appColor"
     android:gravity="center"
     tools:context=".SplashScreen">
 
@@ -27,7 +27,7 @@
         android:text="Report App"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="80dp"
+        android:textSize="60dp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:text="A business application"
         android:textColor="@color/black"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,9 +52,10 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="201dp"
-        android:layout_height="192dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:scaleType="fitXY"
+        android:background="@color/appColor"
         android:src="@drawable/loading"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
